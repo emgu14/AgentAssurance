@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Agentic Mobility Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    #map { height: 90vh; }
+
+    .popup-content { min-width: 260px; }
+    .loading { color: #888; font-style: italic; }
+
+    .recommendation {
+      margin-top: 10px; padding: 10px;
+      background: #f8fcff;
+      border-left: 4px solid #007bff;
+      border-radius: 6px;
+      line-height: 1.4;
+      font-size: 0.95em;
+    }
+    .recommendation h4 {
+      margin: 0 0 5px 0;
+      color: #0d6efd;
+    }
+    .recommendation .analyse {
+      color: #333; margin-bottom: 6px;
+    }
+    .recommendation .polices {
+      color: #444; font-size: 0.9em;
+      margin-bottom: 6px;
+    }
+    .recommendation .conseil {
+      color: #0b6a1e; font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+    const map = L.map('map').setView([36.8, 10.2], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let routeProbs = {};
+    const recommendationsCache = {};
+
+    // Charger les probabilités de trajets
+    fetch(`${API_BASE}/route_probs`)
+      .then(res => res.json())
+      .then(data => { 
+        routeProbs = data; 
+        loadLines(); 
+      })
+      .catch(err => alert("Erreur : impossible de charger les probabilités. L'API est-elle lancée ?"));
+
+    // Charger les lignes
+    function loadLines() {
+      fetch(`${API_BASE}/lines`)
+        .then(res => res.json())
+        .then(lines => {
+          L.geoJSON(lines, {
+            style: feature => {
+              const trip_id = feature.properties.trip_id || feature.properties.shape_id;
+              const delay = routeProbs[trip_id]?.delay_prob || 0;
+              const color = delay > 0.3 ? 'red' : delay > 0.15 ? 'orange' : 'green';
+              return { color, weight: 4, opacity: 0.7 };
+            },
+            onEachFeature: (feature, layer) => {
+              const trip_id = feature.properties.trip_id || feature.properties.shape_id;
+              const delay = routeProbs[trip_id]?.delay_prob || 0;
+              const accident = routeProbs[trip_id]?.accident_prob || 0;
+              const popupId = `recommendation-${trip_id}`;
+
+              const content = `
+                <div class="popup-content">
+                  <strong>🚌 Trajet :</strong> ${trip_id}<br>
+                  <strong>⏱️ Retard :</strong> ${(delay*100).toFixed(1)}%<br>
+                  <strong>⚠️ Accident :</strong> ${(accident*100).toFixed(2)}%<br>
+                  <div id="${popupId}" class="loading">🤖 Génération de la recommandation...</div>
+                </div>`;
+              layer.bindPopup(content);
+
+              layer.on('click', () => {
+                layer.openPopup();
+
+                // Si déjà en cache, afficher directement
+                if (recommendationsCache[trip_id]) {
+                  showRecommendation(popupId, recommendationsCache[trip_id]);
+                  return;
+                }
+
+                fetch(`${API_BASE}/recommendation/${trip_id}`)
+                  .then(r => r.json())
+                  .then(data => {
+                    recommendationsCache[trip_id] = data;
+                    showRecommendation(popupId, data);
+                  })
+                  .catch(() => {
+                    const div = document.getElementById(popupId);
+                    if (div) div.innerHTML = `<span style="color:red">❌ Erreur de chargement de la recommandation</span>`;
+                  });
+              });
+            }
+          }).addTo(map);
+        })
+        .catch(() => alert("❌ Impossible de charger les lignes. Vérifiez que l'API est lancée."));
+    }
+
+    // Affichage formaté des recommandations
+    function showRecommendation(popupId, data) {
+      const div = document.getElementById(popupId);
+      if (!div) return;
+
+      const titre = data?.titre || "💡 Recommandation IA";
+      const analyse = data?.analyse || "Analyse non disponible.";
+      const polices = (data?.polices_recommandees || []).join(", ") || "aucune";
+      const recommandation = data?.recommandation || "Au.";
+
+      div.innerHTML = `
+        <div class="recommendation">
+          <h4>${titre}</h4>
+          <p class="analyse">💬${analyse}</p>
+          <p class="polices"><strong>📋 Polices :</strong> ${polices}</p>
+          
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

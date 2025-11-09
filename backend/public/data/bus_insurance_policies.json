@@ -1,0 +1,114 @@
+[
+  {
+    "policy_name": "Assurance accident passager renforcée",
+    "type": "accident",
+    "trigger": {"accident_prob": 0.04},
+    "coverage": "Couvre toutes blessures corporelles des passagers en cas d'accident",
+    "comment": "Recommandée pour lignes principales et intersections à haut risque"
+  },
+  {
+    "policy_name": "Assurance accident standard",
+    "type": "accident",
+    "trigger": {"accident_prob": 0.02},
+    "coverage": "Couvre blessures corporelles des passagers avec limite standard",
+    "comment": "Convient pour lignes secondaires ou trajets moins fréquentés"
+  },
+  {
+    "policy_name": "Assurance retard >30min",
+    "type": "retard",
+    "trigger": {"delay_prob": 0.3},
+    "coverage": "Compensation passagers en cas de retard supérieur à 30 minutes",
+    "comment": "Lignes très congestionnées ou heures de pointe"
+  },
+  {
+    "policy_name": "Assurance retard optionnelle",
+    "type": "retard",
+    "trigger": {"delay_prob": 0.15},
+    "coverage": "Compensation optionnelle pour retards modérés",
+    "comment": "Peut être activée sur lignes moyennement fréquentées"
+  },
+  {
+    "policy_name": "Responsabilité civile du transporteur",
+    "type": "liability",
+    "trigger": {"accident_prob": 0.0},
+    "coverage": "Couvre les dommages causés à des tiers ou aux biens",
+    "comment": "Police obligatoire pour tous les véhicules de transport"
+  },
+  {
+    "policy_name": "Assurance perte ou vol de bagages",
+    "type": "baggage",
+    "trigger": {"accident_prob": 0.0},
+    "coverage": "Couvre les effets personnels des passagers en cas de perte ou vol",
+    "comment": "Optionnelle mais recommandée sur lignes touristiques"
+  },
+  {
+    "policy_name": "Assurance incendie et dommages matériels",
+    "type": "vehicle",
+    "trigger": {"accident_prob": 0.0},
+    "coverage": "Couvre le véhicule contre incendie, collision et dommages matériels",
+    "comment": "Standard pour toutes les flottes commerciales"
+  },
+  {
+    "policy_name": "Assurance cyberattaque pour flotte connectée",
+    "type": "cyber",
+    "trigger": {"accident_prob": 0.0},
+    "coverage": "Protège contre les attaques sur les systèmes embarqués connectés du véhicule",
+    "comment": "Pour véhicules équipés de GPS et IoT"
+  },
+  {
+    "policy_name": "Assurance climatisation et confort passager",
+    "type": "comfort",
+    "trigger": {"delay_prob": 0.0},
+    "coverage": "Indemnisation en cas de panne du système de climatisation ou chauffage",
+    "comment": "Recommandée pour bus longue distance et transport touristique"
+  },
+  {
+    "policy_name": "Assurance responsabilité chauffeur",
+    "type": "liability",
+    "trigger": {"accident_prob": 0.0},
+    "coverage": "Couvre les fautes professionnelles du chauffeur causant des dommages",
+    "comment": "Protège la compagnie contre les erreurs humaines"
+  },
+  {
+    "policy_name": "Assurance grèves et perturbations externes",
+    "type": "external_risk",
+    "trigger": {"delay_prob": 0.2},
+    "coverage": "Indemnisation en cas de perturbations dues à des grèves ou événements extérieurs",
+    "comment": "Pour lignes de train et métro sensibles aux événements sociaux"
+  },
+  {
+    "policy_name": "Assurance passager VIP",
+    "type": "premium",
+    "trigger": {"accident_prob": 0.01, "delay_prob": 0.05},
+    "coverage": "Couverture complète incluant accident, bagages, confort et retard",
+    "comment": "Option haut de gamme pour clients fréquents ou corporate"
+  },
+  {
+    "policy_name": "Assurance couverture médicale étendue",
+    "type": "medical",
+    "trigger": {"accident_prob": 0.03},
+    "coverage": "Couvre les frais médicaux importants suite à un accident",
+    "comment": "Pour trajets à haut risque ou transport interurbain"
+  },
+  {
+    "policy_name": "Assurance panne moteur",
+    "type": "vehicle",
+    "trigger": {"accident_prob": 0.01},
+    "coverage": "Couvre le coût des réparations en cas de panne moteur",
+    "comment": "Recommandée pour bus de plus de 5 ans ou lignes longues distances"
+  },
+  {
+    "policy_name": "Assurance protection juridique transport",
+    "type": "legal",
+    "trigger": {"accident_prob": 0.0},
+    "coverage": "Frais juridiques pour litiges liés aux incidents de transport",
+    "comment": "Indispensable pour grandes compagnies de transport"
+  },
+  {
+    "policy_name": "Assurance dommages climatiques",
+    "type": "environmental",
+    "trigger": {"accident_prob": 0.0, "delay_prob": 0.1},
+    "coverage": "Couvre les dommages aux véhicules causés par tempêtes ou inondations",
+    "comment": "Recommandée pour zones sujettes aux événements climatiques extrêmes"
+  }
+]
