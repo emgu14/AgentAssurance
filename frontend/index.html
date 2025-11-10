@@ -9,30 +9,34 @@
     body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
     #map { height: 90vh; }
 
-    .popup-content { min-width: 260px; }
+    .popup-content { min-width: 280px; }
     .loading { color: #888; font-style: italic; }
 
+    /* === Carte de recommandation === */
     .recommendation {
-      margin-top: 10px; padding: 10px;
-      background: #f8fcff;
-      border-left: 4px solid #007bff;
-      border-radius: 6px;
-      line-height: 1.4;
+      margin-top: 10px; 
+      padding: 12px;
+      background: #f9fbfd;
+      border-left: 5px solid #0d6efd;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       font-size: 0.95em;
+      line-height: 1.5;
     }
     .recommendation h4 {
-      margin: 0 0 5px 0;
+      margin: 0 0 6px 0;
       color: #0d6efd;
+      font-size: 1.05em;
     }
     .recommendation .analyse {
-      color: #333; margin-bottom: 6px;
+      color: #333;
+      margin: 4px 0 8px 0;
     }
-    .recommendation .polices {
-      color: #444; font-size: 0.9em;
+    .recommendation .police {
       margin-bottom: 6px;
     }
-    .recommendation .conseil {
-      color: #0b6a1e; font-weight: 500;
+    .recommendation .police strong {
+      color: #0d6efd;
     }
   </style>
 </head>
@@ -51,7 +55,7 @@
     let routeProbs = {};
     const recommendationsCache = {};
 
-    // Charger les probabilités de trajets
+    // === Charger les probabilités de trajets ===
     fetch(`${API_BASE}/route_probs`)
       .then(res => res.json())
       .then(data => { 
@@ -60,7 +64,7 @@
       })
       .catch(err => alert("Erreur : impossible de charger les probabilités. L'API est-elle lancée ?"));
 
-    // Charger les lignes
+    // === Charger les lignes ===
     function loadLines() {
       fetch(`${API_BASE}/lines`)
         .then(res => res.json())
@@ -90,7 +94,6 @@
               layer.on('click', () => {
                 layer.openPopup();
 
-                // Si déjà en cache, afficher directement
                 if (recommendationsCache[trip_id]) {
                   showRecommendation(popupId, recommendationsCache[trip_id]);
                   return;
@@ -110,25 +113,33 @@
             }
           }).addTo(map);
         })
-        .catch(() => alert("❌ Impossible de charger les lignes. Vérifiez que l'API est lancée."));
+        .catch(() => alert("❌ Impossible de charger les lignes. Vérifie que l'API est lancée."));
     }
 
-    // Affichage formaté des recommandations
+    // === Affichage structuré des recommandations ===
     function showRecommendation(popupId, data) {
       const div = document.getElementById(popupId);
       if (!div) return;
 
       const titre = data?.titre || "💡 Recommandation IA";
       const analyse = data?.analyse || "Analyse non disponible.";
-      const polices = (data?.polices_recommandees || []).join(", ") || "aucune";
-      const recommandation = data?.recommandation || "Au.";
+      const polices = data?.polices_recommandees || [];
+
+      let policesHTML = "";
+      polices.forEach(p => {
+        if (p.title && p.analysis) {
+          policesHTML += `
+            <div class="police">
+              <strong>${p.title}</strong>: ${p.analysis}
+            </div>`;
+        }
+      });
 
       div.innerHTML = `
         <div class="recommendation">
           <h4>${titre}</h4>
-          <p class="analyse">💬${analyse}</p>
-          <p class="polices"><strong>📋 Polices :</strong> ${polices}</p>
-          
+          <p class="analyse">💬 ${analyse}</p>
+          <div class="polices"><strong>📋 Polices recommandées :</strong><br>${policesHTML}</div>
         </div>
       `;
     }
