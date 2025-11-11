@@ -64,7 +64,6 @@ Open frontend/index.html directly in your browser.
 
 Option B – Serve via Python HTTP server (optional for full local testing):
   cd frontend
-  # Python 3
   python -m http.server 5500
 Then open: http://127.0.0.1:5500
 
