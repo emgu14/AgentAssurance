@@ -6,10 +6,39 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <style>
-    body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-    #map { height: 90vh; }
+    body { 
+      margin: 0; 
+      font-family: 'Segoe UI', Tahoma, sans-serif; 
+      height: 100vh;
+      overflow-y: auto; /* permet de scroller la page */
+    }
 
-    .popup-content { min-width: 280px; }
+    #map-container {
+      height: 90vh;
+      overflow: hidden;
+    }
+
+    #map { 
+      height: 100%; 
+      width: 100%; 
+    }
+
+    /* === Popups === */
+    .popup-content {
+      min-width: 280px;
+      max-height: 300px;   /* limite la hauteur du popup */
+      overflow-y: auto;    /* scroll vertical si contenu trop long */
+    }
+
+    /* Scrollbar jolie */
+    .popup-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    .popup-content::-webkit-scrollbar-thumb {
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+
     .loading { color: #888; font-style: italic; }
 
     /* === Carte de recommandation === */
@@ -41,11 +70,21 @@
   </style>
 </head>
 <body>
-  <div id="map"></div>
+  <div id="map-container">
+    <div id="map"></div>
+  </div>
 
   <script>
     const API_BASE = "http://127.0.0.1:8000";
-    const map = L.map('map').setView([36.8, 10.2], 12);
+
+    // Initialisation de la carte
+    const map = L.map('map', {
+      scrollWheelZoom: false
+    }).setView([36.8, 10.2], 12);
+
+    // Activer le zoom molette seulement au survol
+    map.on('mouseenter', () => map.scrollWheelZoom.enable());
+    map.on('mouseleave', () => map.scrollWheelZoom.disable());
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
