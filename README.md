@@ -31,32 +31,23 @@ This project implements **Agentic Mobility AI**, a system that analyzes bus trip
 1. Create an account at [Hugging Face](https://huggingface.co/).  
 2. Generate a personal API token.  
 3. Create a `.env` file in the `backend` folder:
+  HF_API_KEY=your_personal_huggingface_api_key_here
 
-```bash
-HF_API_KEY=your_personal_huggingface_api_key_here
+
 Installation & Running the Project
 1. Clone the repository
-bash
-Copier le code
-git clone https://github.com/yourusername/agentic-mobility.git
-cd agentic-mobility
 2. Set up Python environment for backend
-bash
-Copier le code
-python -m venv venv
-# Activate environment:
-# Windows:
-venv\Scripts\activate
-# Linux/macOS:
-source venv/bin/activate
+ python -m venv venv
+ # Activate environment:
+ # Windows:
+ venv\Scripts\activate
+ # Linux/macOS:
+ source venv/bin/activate
 3. Install backend dependencies
-bash
-Copier le code
-pip install -r requirements.txt
-4. Run the backend server
-bash
-Copier le code
-uvicorn backend.main:app --reload
+    pip install -r requirements.txt
+4. Run the backend serve
+    uvicorn backend.main:app --reload
+
 Server runs at http://127.0.0.1:8000
 
 Endpoints:
@@ -72,13 +63,10 @@ Option A – Open in Browser:
 Open frontend/index.html directly in your browser.
 
 Option B – Serve via Python HTTP server (optional for full local testing):
-
-bash
-Copier le code
-cd frontend
-# Python 3
-python -m http.server 8080
-Then open: http://127.0.0.1:8080
+  cd frontend
+  # Python 3
+  python -m http.server 5500
+Then open: http://127.0.0.1:5500
 
 The map will load bus lines and show interactive popups.
 
